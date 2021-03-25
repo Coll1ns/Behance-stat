@@ -10,13 +10,8 @@ value = soup.find('div', class_='UserInfo-column-TMV').text
 value = value.replace(",", "")
 numbers = re.findall('\d+', value)
 
-table = []
-row = []
-row.append('Project Views ' + numbers[0])
-row.append('Appreciations ' + numbers[1])
-row.append('Followers ' + numbers[2])
-row.append('Following ' + numbers[3])
-table.append(row)
-print(row)
 
-print(type(numbers))
+views = print('Project Views ' + numbers[0])
+appreciations = print('Appreciations ' + numbers[1])
+followers = print('Followers ' + numbers[2])
+following = print('Following ' + numbers[3])
