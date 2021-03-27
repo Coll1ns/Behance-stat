@@ -1,34 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+import pandas as pd
+from datetime import date
 
-username = input('Enter user name: ').lower()
-url = 'https://www.behance.net/' + username
-html = requests.get(url).text
-
+#getting the valuse on the row variable from the behance site
+html = requests.get('https://www.behance.net/tanya_durs').text
 soup = BeautifulSoup(html, 'html.parser')
-
-table = []
-
+data = {}
 value = soup.find_all('tr', class_="UserInfo-statRow-Erw")
+key = 0
 
 for element in value:
-    row = []
-    row.append(element.find('td', class_='UserInfo-statColumn-1vg').text)
-    row.append(element.find('td', class_='UserInfo-statColumn-1vg UserInfo-statValue-1_-').text)
-    table.append(row)
-print(table)
+	key_val = element.find('td', class_='UserInfo-statColumn-1vg UserInfo-statValue-1_-').text
+	key_val = key_val.replace(',', '')
+	data[key] = key_val
+	key +=1
+	
 
-
-# value = soup.find('div', class_='UserInfo-column-TMV')
-# test_val = soup.find_all('tr', class_="UserInfo-statRow-Erw")
-# value = value.replace(",", "")
-# numbers = re.findall('\d+', value)
-
-
-# print(test_val)
-# views = print('Project Views ' + numbers[0])
-# appreciations = print('Appreciations ' + numbers[1])
-# followers = print('Followers ' + numbers[2])
-# following = print('Following ' + numbers[3])
-#
+print(data)
