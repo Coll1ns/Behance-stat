@@ -1,18 +1,21 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 import re
+import pandas as pd
+from datetime import date
 
-username = input('Enter user name: ')
-url = 'https://www.behance.net/' + username
-html = requests.get(url).text
+#getting the valuse on the row variable from the behance site
+html = requests.get('https://www.behance.net/tanya_durs').text
 soup = BeautifulSoup(html, 'html.parser')
-value = soup.find('div', class_='UserInfo-column-TMV').text
-value = value.replace(",", "")
-numbers = re.findall('\d+', value)
+data = {}
+value = soup.find_all('tr', class_="UserInfo-statRow-Erw")
+key = 0
 
+for element in value:
+	key_val = element.find('td', class_='UserInfo-statColumn-1vg UserInfo-statValue-1_-').text
+	key_val = key_val.replace(',', '')
+	data[key] = key_val
+	key +=1
+	
 
-views = print('Project Views ' + numbers[0])
-appreciations = print('Appreciations ' + numbers[1])
-followers = print('Followers ' + numbers[2])
-following = print('Following ' + numbers[3])
+print(data)
