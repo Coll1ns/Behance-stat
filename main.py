@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 from datetime import date
-from datetime import timedelta
 data = {}
 
 
@@ -46,9 +45,9 @@ diff = current_day_stat - last_day_stat
 # here we are looking shape the series and make it ready to addotion
 infront = pd.Series("-", index=[4])
 current_day_stat = current_day_stat.append([infront, diff], ignore_index=True)
-current_day_stat
 
-current_day_stat.name = date.today() - timedelta(days = 1)
+
+current_day_stat.name = date.today()
 df = df.append(current_day_stat)
 df = df.T
 df.to_excel('test.xlsx', index=False)
