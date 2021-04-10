@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import pandas as pd
 from datetime import date
+import openpyxl
 data = {}
 
 
@@ -22,32 +23,37 @@ def get_stat_today():
         key += 1
 
 
+def get_diff():
+    # df = pd.read_excel('Stats.xlsx')
+    # reading and flipping the table to extract previouse day data
+    df = pd.read_excel("test.xlsx")
+    df = df.T
+
+    # getting the last day data and making the diff arg that will be used to form the
+    # new row of data
+    last_day_stat = df.loc[df.index[-1], 0:3]
+    last_day_stat = pd.to_numeric(last_day_stat)
+    current_day_stat = pd.Series(data)
+    diff = current_day_stat - last_day_stat
+
+    # here we are creating a column that we are going to add to the table
+    infront = pd.Series("-", index=[4])
+    current_day_stat = current_day_stat.append([infront, diff], ignore_index=True)
+    current_day_stat = current_day_stat.values.tolist()
+    current_day_stat.insert(0, date.today())
+    return current_day_stat
+
+
+def add_column(sheet_name, column):
+    ws = wb[sheet_name]
+    new_column = ws.max_column + 1
+
+    for rowy, value in enumerate(column, start = 1):
+        ws.cell(row = rowy, column = new_column, value = value)
+
+
 get_stat_today()
 
-# df = pd.read_excel('Stats.xlsx')
-# reading and flipping the table to extract previouse day data
-df = pd.read_excel("test.xlsx")
-df = df.T
-
-# getting the last day data and making the diff arg that will be used to form the
-# new row of data
-last_day_stat = df.loc[df.index[-1], 0:3]
-last_day_stat = pd.to_numeric(last_day_stat)
-current_day_stat = pd.Series(data)
-diff = current_day_stat - last_day_stat
-
-# for # DEBUG:
-# print(last_day_stat)
-# print(current_day_stat)
-# print(diff)
-
-
-# here we are looking shape the series and make it ready to addotion
-infront = pd.Series("-", index=[4])
-current_day_stat = current_day_stat.append([infront, diff], ignore_index=True)
-
-
-current_day_stat.name = date.today()
-df = df.append(current_day_stat)
-df = df.T
-df.to_excel('test.xlsx', index=False)
+wb = openpyxl.load_workbook('test.xlsx')
+add_column('days', get_diff())
+wb.save('test.xlsx')
